@@ -1,1 +1,2 @@
-console.log('hello javascript')
+import { hello } from './hello'
+hello()
