@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>One thing</title>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans" />
+    <style type="text/css">
+    html {
+        font-family: "Open Sans";
+    }
+    textarea {
+        width: 100%;
+        height: 150px;
+        padding: 12px 20px;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: #f8f8f8;
+        resize: none;
+        font-size: 1.25em;
+    }
+
+    input {
+        width: 100%;
+        padding: 5px 20px;
+        box-sizing: border-box;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        background-color: #f8f8f8;
+        resize: none;
+        font-size: 1.0em;
+    }
+
+    h1 {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 26.4px;
+    }
+
+    h3 {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 15.4px;
+    }
+
+    p {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+    }
+
+    blockquote {
+        font-size: 21px;
+        font-weight: 400;
+        line-height: 30px;
+    }
+
+    pre {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 18.5714px;
+    }
+    .start-hidden {
+        display: none;
+    }
+    #edit {
+      color: lightgrey;
+    }
+    </style>
+</head>
+
+<body>
+    <h1>One Thing:</h1>
+    <div id="onething_set_container" class="start-hidden">
+        <p>
+            Type WHAT and WHEN is the ONE THING you want to accomplish
+        </p>
+        <input type="text" name="onething_set">
+    </div>
+    <div id="onething_show_container">
+      <h1 id="title">
+          <span id="onething"></span><small id='edit'> edit</small>
+      </h1>
+      <textarea name='onething_say' class="start-hidden" 
+          placeholder="Three times a day you must, reiterate your One Thing by typing it in word for word here"></textarea>
+      <div>
+          <strong><p id="flash_message"></p></strong>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+    function loadOneThing() {
+
+        const storedOneThing = window.localStorage.getItem('onething');
+
+        if (storedOneThing) {
+            $("#onething_show_container").show()
+            $('#onething').text(storedOneThing)
+            $('[name="onething_say"]').show()
+            $('[name="onething_say"]').on('keyup', function(e) {
+                if (e.shiftKey && e.keyCode === 13) {
+                    $('[name="onething_say"]').val($('[name="onething_say"]').val().trim())
+                    let oneThingSaid = $('[name="onething_say"]').val()
+                    if (oneThingSaid === storedOneThing) {
+                        $('[name="onething_say"]').hide()
+                        $('#onething').css('color', 'green')
+                        $('#flash_message').text('Confirmed')
+                    } else {
+                        $('#flash_message').text('You must type the One Thing exactly')
+                    }
+                }
+            })
+        } else {
+            $('#onething_set_container').show()
+            $('[name="onething_set"]').on('keyup', function(e) {
+                if (e.keyCode === 13) {
+                    $('#onething_set_container').hide()
+                    let newOneThing = $('[name="onething_set"]').val().trim()
+                    window.localStorage.setItem('onething', newOneThing);
+                    loadOneThing()
+                }
+            })
+        }
+    }
+    loadOneThing()
+
+    $("#edit").on('click', function() {
+      window.localStorage.clear()
+      $("#onething_show_container").hide()
+      loadOneThing()
+    })
+    </script>
+</body>
+
+</html>
